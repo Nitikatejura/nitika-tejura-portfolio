@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nitika Tejura | Security Terminal & Portfolio v1.0</title>
+  <meta name="description" content="Interactive Retro-Cyberpunk Terminal Portfolio of Nitika Tejura - Computer Engineering Student & Cybersecurity Enthusiast. Proficient in SIEM, Splunk, Wazuh, Wireshark & Pentesting.">
+  <meta name="author" content="Nitika Tejura">
+  <!-- Google Fonts: JetBrains Mono & Fira Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM & TERMINAL STYLES (Cyberpunk Dark Mode)
+       ========================================================================== */
+    :root {
+      --bg-color: #06080a;
+      --term-bg: rgba(10, 14, 18, 0.95);
+      --term-border: #00ff66;
+      --text-main: #00ff66;
+      --text-dim: #00b347;
+      --accent-cyan: #00e5ff;
+      --accent-amber: #ffb703;
+      --accent-crimson: #ff2a6d;
+      --accent-purple: #bd00ff;
+      --glow-color: rgba(0, 255, 102, 0.4);
+      --glow-cyan: rgba(0, 229, 255, 0.4);
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      --scanline-opacity: 0.25;
+    }
+
+    /* Themes */
+    body.theme-amber {
+      --term-border: #ffb703;
+      --text-main: #ffb703;
+      --text-dim: #cc9200;
+      --accent-cyan: #ff7b00;
+      --glow-color: rgba(255, 183, 3, 0.4);
+    }
+    body.theme-cyan {
+      --term-border: #00e5ff;
+      --text-main: #00e5ff;
+      --text-dim: #00a3b8;
+      --accent-cyan: #00ff66;
+      --glow-color: rgba(0, 229, 255, 0.4);
+    }
+    body.theme-crimson {
+      --term-border: #ff2a6d;
+      --text-main: #ff2a6d;
+      --text-dim: #b81c4c;
+      --accent-cyan: #00e5ff;
+      --glow-color: rgba(255, 42, 109, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.5;
+      overflow: hidden;
+    }
+
+    /* Ambient cyber background grid */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: 
+        radial-gradient(circle at 50% 50%, rgba(0, 255, 102, 0.05) 0%, transparent 70%),
+        linear-gradient(rgba(0, 255, 102, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 102, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 30px 30px, 30px 30px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* CRT Scanline Effect Overlay */
+    .crt-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+      background-size: 100% 3px, 6px 100%;
+      z-index: 99;
+      pointer-events: none;
+      opacity: var(--scanline-opacity);
+      transition: opacity 0.3s ease;
+    }
+
+    .crt-overlay.disabled {
+      opacity: 0;
+    }
+
+    /* Screen Flicker Animation */
+    @keyframes flicker {
+      0% { opacity: 0.99; }
+      50% { opacity: 1; }
+      52% { opacity: 0.96; }
+      54% { opacity: 1; }
+      80% { opacity: 0.98; }
+      100% { opacity: 0.99; }
+    }
+
+    .terminal-wrapper {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      width: 95%;
+      max-width: 1200px;
+      height: 92vh;
+      margin: 4vh auto;
+      background: var(--term-bg);
+      border: 1px solid var(--term-border);
+      border-radius: 8px;
+      box-shadow: 0 0 25px var(--glow-color), inset 0 0 15px rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      animation: flicker 0.15s infinite alternate;
+    }
+
+    /* Terminal Header Bar */
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(0, 0, 0, 0.6);
+      border-bottom: 1px solid rgba(0, 255, 102, 0.2);
+      border-top-left-radius: 7px;
+      border-top-right-radius: 7px;
+      user-select: none;
+    }
+
+    .window-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .control-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .control-btn:hover {
+      transform: scale(1.2);
+      filter: brightness(1.3);
+    }
+    .btn-close { background-color: #ff5f56; box-shadow: 0 0 6px #ff5f56; }
+    .btn-min { background-color: #ffbd2e; box-shadow: 0 0 6px #ffbd2e; }
+    .btn-max { background-color: #27c93f; box-shadow: 0 0 6px #27c93f; }
+
+    .window-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px var(--glow-cyan);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      background: rgba(0, 255, 102, 0.08);
+      border: 1px solid var(--term-border);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-btn:hover {
+      background: var(--term-border);
+      color: #000;
+      box-shadow: 0 0 10px var(--glow-color);
+    }
+
+    /* Quick Action Command Chips Bar */
+    .command-chips-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(0, 0, 0, 0.4);
+      border-bottom: 1px solid rgba(0, 255, 102, 0.15);
+      user-select: none;
+    }
+
+    .chip-label {
+      font-size: 11px;
+      color: var(--accent-cyan);
+      align-self: center;
+      margin-right: 4px;
+      font-weight: bold;
+    }
+
+    .chip-btn {
+      background: rgba(0, 229, 255, 0.05);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: var(--accent-cyan);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .chip-btn:hover {
+      background: var(--accent-cyan);
+      color: #000;
+      box-shadow: 0 0 8px var(--glow-cyan);
+      transform: translateY(-1px);
+    }
+
+    /* Terminal Output Container */
+    .terminal-body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Scrollbar */
+    .terminal-body::-webkit-scrollbar {
+      width: 8px;
+    }
+    .terminal-body::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.5);
+    }
+    .terminal-body::-webkit-scrollbar-thumb {
+      background: var(--term-border);
+      border-radius: 4px;
+      box-shadow: 0 0 8px var(--glow-color);
+    }
+
+    /* Output Elements */
+    .ascii-banner {
+      color: var(--text-main);
+      font-weight: bold;
+      white-space: pre;
+      line-height: 1.25;
+      font-size: 11px;
+      text-shadow: 0 0 10px var(--glow-color);
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+
+    .greeting-box {
+      border-left: 3px solid var(--accent-cyan);
+      padding-left: 12px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    .greeting-text {
+      color: #ffffff;
+      font-size: 14px;
+    }
+
+    .cmd-entry {
+      margin-bottom: 10px;
+    }
+
+    .prompt-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .prompt-user {
+      color: var(--accent-cyan);
+    }
+    .prompt-path {
+      color: var(--accent-amber);
+    }
+    .prompt-symbol {
+      color: var(--text-main);
+    }
+    .executed-cmd {
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    .response-block {
+      color: #e0e0e0;
+      margin-left: 14px;
+      padding: 6px 0;
+      word-wrap: break-word;
+    }
+
+    /* Text formatting utilities */
+    .text-highlight { color: var(--text-main); font-weight: bold; }
+    .text-cyan { color: var(--accent-cyan); }
+    .text-amber { color: var(--accent-amber); }
+    .text-crimson { color: var(--accent-crimson); }
+    .text-dim { color: #888; }
+    .text-bold { font-weight: bold; }
+    .text-gold { color: #ffd700; }
+
+    /* Interactive Output Links */
+    a.term-link {
+      color: var(--accent-cyan);
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.2s ease, text-shadow 0.2s ease;
+    }
+    a.term-link:hover {
+      color: var(--text-main);
+      text-shadow: 0 0 8px var(--glow-color);
+    }
+
+    .clickable-cmd {
+      color: var(--accent-cyan);
+      cursor: pointer;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+    .clickable-cmd:hover {
+      color: var(--text-main);
+      text-shadow: 0 0 6px var(--glow-color);
+    }
+
+    /* Tables & Cards */
+    .cmd-table {
+      width: 100%;
+      max-width: 800px;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    .cmd-table td, .cmd-table th {
+      padding: 6px 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(0, 255, 102, 0.15);
+    }
+
+    .cmd-table th {
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--accent-cyan);
+    }
+
+    .cmd-name {
+      color: var(--text-main);
+      font-weight: bold;
+    }
+
+    .skill-card {
+      background: rgba(0, 255, 102, 0.03);
+      border: 1px solid rgba(0, 255, 102, 0.2);
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+    }
+
+    .skill-title {
+      color: var(--accent-cyan);
+      font-weight: bold;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .project-card, .exp-card {
+      background: rgba(10, 20, 25, 0.7);
+      border-left: 3px solid var(--text-main);
+      border-right: 1px solid rgba(0, 255, 102, 0.15);
+      border-top: 1px solid rgba(0, 255, 102, 0.15);
+      border-bottom: 1px solid rgba(0, 255, 102, 0.15);
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .project-header, .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .project-title, .exp-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .badge-sec {
+      display: inline-block;
+      background: rgba(0, 229, 255, 0.15);
+      color: var(--accent-cyan);
+      border: 1px solid var(--accent-cyan);
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-right: 4px;
+      margin-top: 4px;
+    }
+
+    /* Terminal Input Section */
+    .terminal-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px 14px 16px;
+      background: rgba(0, 0, 0, 0.8);
+      border-top: 1px solid rgba(0, 255, 102, 0.2);
+    }
+
+    .input-prompt {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .cmd-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+      caret-color: var(--text-main);
+    }
+
+    /* Matrix Rain Fullscreen Overlay Canvas */
+    #matrixCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 90;
+      pointer-events: auto;
+      display: none;
+      background: #000;
+    }
+
+    .matrix-exit-hint {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 95;
+      background: rgba(0, 0, 0, 0.8);
+      color: var(--text-main);
+      border: 1px solid var(--text-main);
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 12px;
+      display: none;
+      cursor: pointer;
+      box-shadow: 0 0 15px var(--glow-color);
+    }
+
+    /* Mobile virtual keyboard shortcut row */
+    .mobile-nav-bar {
+      display: none;
+      padding: 6px 12px;
+      background: #000;
+      border-top: 1px solid rgba(0, 255, 102, 0.3);
+      overflow-x: auto;
+      white-space: nowrap;
+      gap: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .terminal-wrapper {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
+        border: none;
+      }
+
+      .terminal-header {
+        padding: 8px 12px;
+      }
+
+      .window-title {
+        font-size: 11px;
+      }
+
+      .ascii-banner {
+        font-size: 8px;
+      }
+
+      .mobile-nav-bar {
+        display: flex;
+      }
+
+      .command-chips-bar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="crt-overlay" id="crtOverlay"></div>
+
+  <!-- Matrix Digital Rain Canvas -->
+  <canvas id="matrixCanvas"></canvas>
+  <div class="matrix-exit-hint" id="matrixExitHint" onclick="toggleMatrixMode(false)">
+    ⚡ MATRIX MODE ACTIVE - Click here or press ESC / type 'exit' to return
+  </div>
+
+  <!-- Main Terminal App Window -->
+  <div class="terminal-wrapper" id="termWrapper">
+    
+    <!-- Top Header Bar -->
+    <header class="terminal-header">
+      <div class="window-controls">
+        <span class="control-btn btn-close" title="Clear Buffer" onclick="handleClear()"></span>
+        <span class="control-btn btn-min" title="Cycle Theme" onclick="cycleTheme()"></span>
+        <span class="control-btn btn-max" title="Fullscreen Matrix" onclick="toggleMatrixMode(true)"></span>
+      </div>
+
+      <div class="window-title">
+        <span>🔒 NITIKA TEJURA :: SEC-OPS TERMINAL v1.0</span>
+      </div>
+
+      <div class="header-actions">
+        <button class="icon-btn" onclick="toggleCRT()" title="Toggle Scanline FX">
+          📺 <span id="crtStatus">CRT ON</span>
+        </button>
+        <button class="icon-btn" onclick="toggleAudio()" title="Toggle Sound FX">
+          🔊 <span id="audioStatus">SFX OFF</span>
+        </button>
+        <button class="icon-btn" onclick="cycleTheme()" title="Switch Color Theme">
+          🎨 <span id="themeName">CYBER</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Quick Action Chips (Desktop Navigation Toolbar) -->
+    <div class="command-chips-bar">
+      <span class="chip-label">QUICK COMMANDS:</span>
+      <button class="chip-btn" onclick="runChipCmd('help')">help</button>
+      <button class="chip-btn" onclick="runChipCmd('about')">about</button>
+      <button class="chip-btn" onclick="runChipCmd('skills')">skills</button>
+      <button class="chip-btn" onclick="runChipCmd('projects')">projects</button>
+      <button class="chip-btn" onclick="runChipCmd('experience')">experience</button>
+      <button class="chip-btn" onclick="runChipCmd('certs')">certs</button>
+      <button class="chip-btn" onclick="runChipCmd('contact')">contact</button>
+      <button class="chip-btn" onclick="runChipCmd('matrix')">matrix</button>
+      <button class="chip-btn" onclick="runChipCmd('clear')">clear</button>
+    </div>
+
+    <!-- Output Display Area -->
+    <main class="terminal-body" id="termBody">
+      <!-- Banner Output on Initialization -->
+      <div class="ascii-banner" id="asciiBanner">
+  _  _ ___ _____ ___ _  AA   _____ _____ _ _  _ ___ A
+ | \| |_ _|_   _|_ _| |/ /  |_   _| __  | | || | _ \ \
+ | .` || |  | |  | || ' <     | | | _| || | || |   / /
+ |_|\_|___| |_| |___|_|\_\    |_| |___|___/\__/|_|_\_\
+     [ COMPUTER ENGINEERING & CYBERSECURITY OPERATIONS ]
+      </div>
+
+      <div class="greeting-box">
+        <div class="greeting-text" id="typewriterTarget">
+          Initializing Nitika Tejura Security Terminal v1.0...
+        </div>
+        <div class="text-dim" style="font-size: 12px; margin-top: 4px;">
+          Type <span class="clickable-cmd" onclick="runChipCmd('help')">help</span> to view available security commands or click quick tags above.
+        </div>
+      </div>
+
+      <div id="outputHistory"></div>
+    </main>
+
+    <!-- Mobile Navigation Chips -->
+    <div class="mobile-nav-bar">
+      <button class="chip-btn" onclick="runChipCmd('help')">help</button>
+      <button class="chip-btn" onclick="runChipCmd('about')">about</button>
+      <button class="chip-btn" onclick="runChipCmd('skills')">skills</button>
+      <button class="chip-btn" onclick="runChipCmd('projects')">projects</button>
+      <button class="chip-btn" onclick="runChipCmd('experience')">exp</button>
+      <button class="chip-btn" onclick="runChipCmd('certs')">certs</button>
+      <button class="chip-btn" onclick="runChipCmd('contact')">contact</button>
+      <button class="chip-btn" onclick="runChipCmd('matrix')">matrix</button>
+    </div>
+
+    <!-- Interactive Input Bar -->
+    <footer class="terminal-input-row">
+      <div class="input-prompt">
+        <span class="prompt-user">nitika@sec-ops</span>:<span class="prompt-path">~</span><span class="prompt-symbol">$</span>
+      </div>
+      <input 
+        type="text" 
+        id="cmdInput" 
+        class="cmd-input" 
+        placeholder="Type a command (e.g. 'help', 'projects', 'skills')..." 
+        autocomplete="off" 
+        autocorrect="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+      />
+    </footer>
+
+  </div>
+
+  <!-- JavaScript Engine -->
+  <script>
+    /* ==========================================================================
+       PORTFOLIO RESUME DATA & DATA STORES
+       ========================================================================== */
+    const RESUME_DATA = {
+      name: "Nitika Tejura",
+      title: "Computer Engineering Student & Cybersecurity Enthusiast",
+      contact: {
+        email: "nitika.tejura8@gmail.com",
+        phone: "+91 8487 948424",
+        tryhackme: "Top 8%",
+        linkedin: "https://linkedin.com/in/nitikatejura",
+        github: "https://github.com/Nitikatejura"
+      },
+      summary: "Detail-oriented Computer Engineering student with a strong interest in cybersecurity. Proficient in Splunk, Wazuh, and Wireshark. Dedicated to identifying and mitigating cyber threats while maintaining a robust security posture.",
+      education: {
+        degree: "Bachelor of Engineering in Computer Engineering",
+        institution: "S.P.B. Patel Engineering College",
+        cgpa: "9.13",
+        period: "2023 – 2027"
+      },
+      skills: {
+        "Security Operations": ["Splunk (SIEM)", "Wazuh"],
+        "Networking & Pentesting": ["Wireshark", "Nmap", "Burp Suite"],
+        "Cybersecurity Frameworks": ["NIST CSF", "ISO 27001", "OWASP Top 10"],
+        "Programming & Scripting": ["Python", "Bash"],
+        "Soft Skills": ["Communication", "Adaptability", "Teamwork"]
+      },
+      projects: [
+        {
+          name: "Secure File Sharing System",
+          tech: "AES-256 Encryption, TLS 1.3, Zero-Knowledge Architecture, SHA-256 Hashing",
+          desc: "High-security architecture designed for protected file exchange using AES-256 encryption at rest, TLS 1.3 in transit, Zero-Knowledge principles, and cryptographic SHA-256 integrity verification.",
+          securityFeatures: ["AES-256 Encryption", "TLS 1.3 Protocol", "Zero-Knowledge Proofs", "SHA-256 Hashing"]
+        },
+        {
+          name: "AyurSutra (Panchakarma Patient Management System)",
+          tech: "Role-Based Access Control (RBAC), Encrypted Data Storage, Audit Logging",
+          desc: "Secure scheduling and healthcare management platform built for sensitive patient records with granular Role-Based Access Control (RBAC) and privacy compliance.",
+          securityFeatures: ["Role-Based Access Control (RBAC)", "Patient Data Privacy", "Audit Trail Logging"]
+        },
+        {
+          name: "Aarogya Mitra (AI Healthcare Chatbot)",
+          tech: "Python, Natural Language Processing (NLP), AI Decision Trees",
+          desc: "Python-based NLP model providing preliminary health consultations. Recognized for innovation and accuracy.",
+          achievement: "🏆 Ranked Top 19 out of 170 teams in Maverick Effect AI Challenge, Gujarat.",
+          securityFeatures: ["Data Sanitization", "NLP Logic Trees", "Secure Telemetry"]
+        }
+      ],
+      experience: [
+        {
+          role: "AI Summer Intern",
+          company: "IBM SkillsBuild",
+          period: "Aug 2024",
+          details: "Developed 'CareConnect' using IBM Watson Assistant with logic-based workflows and complex decision trees for intelligent patient routing and triage."
+        },
+        {
+          role: "Vice President",
+          company: "Entrepreneurship Cell (E-Cell), SIT",
+          period: "2025 – Present",
+          details: "Led institute to National Finals of NEC at IIT Bombay (Rank 35 out of 480+ colleges across India). Successfully managed a cross-functional team of 25 for E-Summit 2025, Illuminate Workshop, and Eureka!."
+        },
+        {
+          role: "Anchor & Coordinator",
+          company: "TEDxSaffrony",
+          period: "Feb 2026",
+          details: "Served as Lead Stage Anchor and Marketing & Sponsorship Coordinator for high-profile public conference."
+        }
+      ],
+      certifications: [
+        { name: "Certified Ethical Hacker (CEH)", issuer: "EC-Council", status: "In Progress ⏳" },
+        { name: "Ethical Hacking", issuer: "Tutedude", status: "Certified Verified ✅" },
+        { name: "Cybersecurity Analyst Virtual Experience", issuer: "Forage / TCS", status: "Completed ✅" },
+        { name: "Cybersecurity Fundamentals", issuer: "IBM SkillsBuild", status: "Completed ✅" },
+        { name: "Project Management Fundamentals", issuer: "IBM SkillsBuild", status: "Completed ✅" },
+        { name: "Azure Data Fundamentals", issuer: "Microsoft Learn", status: "Completed ✅" }
+      ]
+    };
+
+    /* Supported Commands Registry */
+    const COMMANDS = [
+      'help', 'about', 'skills', 'projects', 'experience', 
+      'certs', 'contact', 'clear', 'sudo', 'matrix', 'theme', 
+      'banner', 'whoami', 'date', 'socials'
+    ];
+
+    /* History & State */
+    let commandHistory = [];
+    let historyIndex = -1;
+    let sfxEnabled = false;
+    let crtEnabled = true;
+    const themes = ['cyber', 'amber', 'cyan', 'crimson'];
+    let currentThemeIndex = 0;
+
+    /* Web Audio API retro sound click generator */
+    let audioCtx = null;
+    function playClickSound() {
+      if (!sfxEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.04);
+      } catch(e) {}
+    }
+
+    /* ==========================================================================
+       COMMAND PARSER & PROCESSOR
+       ========================================================================== */
+    const cmdInput = document.getElementById('cmdInput');
+    const outputHistory = document.getElementById('outputHistory');
+    const termBody = document.getElementById('termBody');
+
+    cmdInput.addEventListener('keydown', function(e) {
+      playClickSound();
+
+      if (e.key === 'Enter') {
+        const rawCmd = this.value.trim();
+        if (rawCmd.length > 0) {
+          commandHistory.push(rawCmd);
+          historyIndex = commandHistory.length;
+          processCommand(rawCmd);
+        } else {
+          appendPromptLine('');
+        }
+        this.value = '';
+        scrollToBottom();
+      } 
+      else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (historyIndex > 0) {
+          historyIndex--;
+          this.value = commandHistory[historyIndex];
+        }
+      } 
+      else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyIndex < commandHistory.length - 1) {
+          historyIndex++;
+          this.value = commandHistory[historyIndex];
+        } else {
+          historyIndex = commandHistory.length;
+          this.value = '';
+        }
+      } 
+      else if (e.key === 'Tab') {
+        e.preventDefault();
+        handleTabCompletion(this.value);
+      }
+    });
+
+    function runChipCmd(cmd) {
+      cmdInput.value = cmd;
+      commandHistory.push(cmd);
+      historyIndex = commandHistory.length;
+      processCommand(cmd);
+      cmdInput.value = '';
+      scrollToBottom();
+    }
+
+    function scrollToBottom() {
+      termBody.scrollTop = termBody.scrollHeight;
+    }
+
+    function appendPromptLine(cmdText) {
+      const line = document.createElement('div');
+      line.className = 'prompt-line';
+      line.innerHTML = `
+        <span class="prompt-user">nitika@sec-ops</span>:<span class="prompt-path">~</span><span class="prompt-symbol">$</span>
+        <span class="executed-cmd">${escapeHTML(cmdText)}</span>
+      `;
+      outputHistory.appendChild(line);
+    }
+
+    function appendResponse(htmlContent) {
+      const respBlock = document.createElement('div');
+      respBlock.className = 'response-block';
+      respBlock.innerHTML = htmlContent;
+      outputHistory.appendChild(respBlock);
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function handleTabCompletion(inputVal) {
+      const trimmed = inputVal.trim().toLowerCase();
+      if (!trimmed) return;
+      const matches = COMMANDS.filter(c => c.startsWith(trimmed));
+      if (matches.length === 1) {
+        cmdInput.value = matches[0];
+      } else if (matches.length > 1) {
+        appendPromptLine(inputVal);
+        appendResponse(`<div class="text-dim">Matches: ${matches.join('  ')}</div>`);
+        scrollToBottom();
+      }
+    }
+
+    /* Main Command Router */
+    function processCommand(cmdLine) {
+      appendPromptLine(cmdLine);
+
+      const parts = cmdLine.toLowerCase().trim().split(/\s+/);
+      const mainCmd = parts[0];
+
+      switch(mainCmd) {
+        case 'help':
+          renderHelp();
+          break;
+        case 'about':
+          renderAbout();
+          break;
+        case 'skills':
+          renderSkills();
+          break;
+        case 'projects':
+          renderProjects();
+          break;
+        case 'experience':
+        case 'exp':
+          renderExperience();
+          break;
+        case 'certs':
+        case 'certifications':
+          renderCerts();
+          break;
+        case 'contact':
+        case 'socials':
+          renderContact();
+          break;
+        case 'clear':
+          handleClear();
+          break;
+        case 'sudo':
+          renderSudo();
+          break;
+        case 'matrix':
+          toggleMatrixMode(true);
+          break;
+        case 'theme':
+          cycleTheme();
+          break;
+        case 'banner':
+          renderBanner();
+          break;
+        case 'whoami':
+          appendResponse(`<div class="text-cyan">guest@sec-terminal :: Privilege Level: Visitor [Read-Only]</div>`);
+          break;
+        case 'date':
+          appendResponse(`<div class="text-dim">System Timestamp: ${new Date().toUTCString()}</div>`);
+          break;
+        default:
+          appendResponse(`
+            <div class="text-crimson">Command not recognized: '${escapeHTML(mainCmd)}'</div>
+            <div class="text-dim">Type <span class="clickable-cmd" onclick="runChipCmd('help')">help</span> for available security commands.</div>
+          `);
+      }
+    }
+
+    /* ==========================================================================
+       COMMAND OUTPUT RENDERERS
+       ========================================================================== */
+
+    function renderHelp() {
+      const html = `
+        <div class="text-highlight" style="margin-bottom:6px;">AVAILABLE SECURITY & SYSTEM COMMANDS:</div>
+        <table class="cmd-table">
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('about')">about</span></td>
+              <td>Profile summary, education, and TryHackMe statistics.</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('skills')">skills</span></td>
+              <td>Categorized breakdown of SIEM tools, pentesting, frameworks & coding.</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('projects')">projects</span></td>
+              <td>Security projects (AES-256 system, AyurSutra RBAC, Aarogya Mitra AI).</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('experience')">experience</span></td>
+              <td>IBM SkillsBuild Intern, SIT E-Cell Vice President & TEDx Anchor.</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('certs')">certs</span></td>
+              <td>CEH (In Progress), Tutedude, IBM, TCS/Forage & Azure certifications.</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('contact')">contact</span></td>
+              <td>Interactive communication endpoints (Email, Phone, GitHub, LinkedIn).</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('matrix')">matrix</span></td>
+              <td>Triggers fullscreen Cyberpunk Matrix Digital Rain visualization.</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('theme')">theme</span></td>
+              <td>Cycles color themes (Green Cyber, Amber, Cyan, Crimson).</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('sudo')">sudo</span></td>
+              <td>Execute superuser command (Easter Egg).</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('clear')">clear</span></td>
+              <td>Wipes terminal buffer.</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+      appendResponse(html);
+    }
+
+    function renderAbout() {
+      const html = `
+        <div style="max-width:850px;">
+          <div class="text-highlight" style="font-size: 16px; margin-bottom: 4px;">
+            👤 ${RESUME_DATA.name}
+          </div>
+          <div class="text-cyan" style="margin-bottom: 10px;">
+            ${RESUME_DATA.title}
+          </div>
+
+          <div style="margin-bottom: 12px; line-height: 1.6;">
+            ${RESUME_DATA.summary}
+          </div>
+
+          <div class="skill-card">
+            <div class="text-amber" style="font-weight:bold; margin-bottom: 4px;">🎓 ACADEMIC BACKGROUND</div>
+            <div><span class="text-highlight">${RESUME_DATA.education.degree}</span></div>
+            <div>${RESUME_DATA.education.institution} (${RESUME_DATA.education.period})</div>
+            <div>Grade / Performance: <span class="text-cyan font-bold">CGPA ${RESUME_DATA.education.cgpa}</span></div>
+          </div>
+
+          <div class="skill-card">
+            <div class="text-gold" style="font-weight:bold;">🏆 TRYHACKME STANDING</div>
+            <div>Platform Rank: <span class="text-highlight">Top 8% Global Cybersecurity Leaderboard</span></div>
+            <div class="text-dim" style="font-size:12px;">Active in hands-on threat hunting, network analysis, and vulnerability assessment labs.</div>
+          </div>
+        </div>
+      `;
+      appendResponse(html);
+    }
+
+    function renderSkills() {
+      let html = `<div class="text-highlight" style="margin-bottom: 8px;">🛡️ TECHNICAL & SECURITY CAPABILITIES:</div>`;
+      
+      for (const [category, skillList] of Object.entries(RESUME_DATA.skills)) {
+        html += `
+          <div class="skill-card">
+            <div class="skill-title">
+              <span>⚡ ${category}</span>
+            </div>
+            <div>
+              ${skillList.map(s => `<span class="badge-sec">${escapeHTML(s)}</span>`).join(' ')}
+            </div>
+          </div>
+        `;
+      }
+      appendResponse(html);
+    }
+
+    function renderProjects() {
+      let html = `<div class="text-highlight" style="margin-bottom: 10px;">🚀 CYBERSECURITY & SOFTWARE PROJECTS:</div>`;
+      
+      RESUME_DATA.projects.forEach(p => {
+        html += `
+          <div class="project-card">
+            <div class="project-header">
+              <span class="project-title">🔐 ${escapeHTML(p.name)}</span>
+            </div>
+            <div class="text-dim" style="font-size: 12px; margin-bottom: 6px;">
+              <span class="text-cyan">Tech Stack:</span> ${escapeHTML(p.tech)}
+            </div>
+            <div style="margin-bottom: 8px; color: #ddd;">
+              ${escapeHTML(p.desc)}
+            </div>
+            ${p.achievement ? `<div class="text-gold" style="font-weight:bold; margin-bottom:6px;">${escapeHTML(p.achievement)}</div>` : ''}
+            <div>
+              ${p.securityFeatures.map(f => `<span class="badge-sec">🛡️ ${escapeHTML(f)}</span>`).join(' ')}
+            </div>
+          </div>
+        `;
+      });
+      appendResponse(html);
+    }
+
+    function renderExperience() {
+      let html = `<div class="text-highlight" style="margin-bottom: 10px;">💼 PROFESSIONAL & LEADERSHIP EXPERIENCE:</div>`;
+      
+      RESUME_DATA.experience.forEach(exp => {
+        html += `
+          <div class="exp-card">
+            <div class="exp-header">
+              <span class="exp-title">📌 ${escapeHTML(exp.role)} <span class="text-cyan">@ ${escapeHTML(exp.company)}</span></span>
+              <span class="text-amber" style="font-size: 12px;">${escapeHTML(exp.period)}</span>
+            </div>
+            <div style="color: #ddd; line-height: 1.5;">
+              ${escapeHTML(exp.details)}
+            </div>
+          </div>
+        `;
+      });
+      appendResponse(html);
+    }
+
+    function renderCerts() {
+      let html = `
+        <div class="text-highlight" style="margin-bottom: 8px;">📜 INDUSTRY CERTIFICATIONS & TRAINING:</div>
+        <div style="max-width:700px;">
+      `;
+
+      RESUME_DATA.certifications.forEach(c => {
+        html += `
+          <div style="display:flex; justify-content:space-between; padding: 6px 10px; border-bottom:1px solid rgba(0,255,102,0.15);">
+            <div>
+              <span class="text-highlight">⚡ ${escapeHTML(c.name)}</span> 
+              <span class="text-dim">(${escapeHTML(c.issuer)})</span>
+            </div>
+            <div class="text-cyan">${escapeHTML(c.status)}</div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      appendResponse(html);
+    }
+
+    function renderContact() {
+      const c = RESUME_DATA.contact;
+      const html = `
+        <div class="text-highlight" style="margin-bottom: 8px;">📡 COMMUNICATIONS & SOCIAL ENDPOINTS:</div>
+        <div class="skill-card" style="max-width: 600px;">
+          <div style="margin-bottom: 6px;">📧 Email: <a class="term-link" href="mailto:${c.email}">${c.email}</a></div>
+          <div style="margin-bottom: 6px;">📞 Phone: <a class="term-link" href="tel:${c.phone.replace(/\s+/g, '')}">${c.phone}</a></div>
+          <div style="margin-bottom: 6px;">🔗 LinkedIn: <a class="term-link" href="${c.linkedin}" target="_blank" rel="noopener">${c.linkedin}</a></div>
+          <div style="margin-bottom: 6px;">💻 GitHub: <a class="term-link" href="${c.github}" target="_blank" rel="noopener">${c.github}</a></div>
+          <div>🎯 TryHackMe Standing: <span class="text-gold font-bold">${c.tryhackme} Global</span></div>
+        </div>
+      `;
+      appendResponse(html);
+    }
+
+    function renderSudo() {
+      const html = `
+        <div class="text-crimson" style="font-weight:bold; font-size:15px; margin-bottom:4px;">
+          ⛔ ACCESS DENIED: ROOT PRIVILEGES REQUIRED
+        </div>
+        <div class="text-amber">
+          ALERT ID: #SEC-9942 | Incident logged & dispatched to SIEM / Splunk.
+        </div>
+        <div class="text-dim" style="font-size:12px;">
+          "Nice try, hacker! Unauthorized escalation attempt has been flagged."
+        </div>
+      `;
+      appendResponse(html);
+    }
+
+    function handleClear() {
+      outputHistory.innerHTML = '';
+    }
+
+    function renderBanner() {
+      const ascii = document.getElementById('asciiBanner').outerHTML;
+      appendResponse(ascii);
+    }
+
+    /* UI Toggles */
+    function toggleCRT() {
+      crtEnabled = !crtEnabled;
+      document.getElementById('crtOverlay').classList.toggle('disabled', !crtEnabled);
+      document.getElementById('crtStatus').innerText = crtEnabled ? 'CRT ON' : 'CRT OFF';
+    }
+
+    function toggleAudio() {
+      sfxEnabled = !sfxEnabled;
+      document.getElementById('audioStatus').innerText = sfxEnabled ? 'SFX ON' : 'SFX OFF';
+    }
+
+    function cycleTheme() {
+      document.body.classList.remove('theme-amber', 'theme-cyan', 'theme-crimson');
+      currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+      const theme = themes[currentThemeIndex];
+      if (theme !== 'cyber') {
+        document.body.classList.add('theme-' + theme);
+      }
+      document.getElementById('themeName').innerText = theme.toUpperCase();
+    }
+
+    /* ==========================================================================
+       MATRIX DIGITAL RAIN EFFECT (Canvas)
+       ========================================================================== */
+    const matrixCanvas = document.getElementById('matrixCanvas');
+    const matrixCtx = matrixCanvas.getContext('2d');
+    const matrixExitHint = document.getElementById('matrixExitHint');
+    let matrixInterval = null;
+    let isMatrixActive = false;
+
+    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+-/<>~';
+    const alphabet = katakana + latin;
+
+    const fontSize = 16;
+    let columns = 0;
+    let rainDrops = [];
+
+    function initMatrixCanvas() {
+      matrixCanvas.width = window.innerWidth;
+      matrixCanvas.height = window.innerHeight;
+      columns = Math.floor(matrixCanvas.width / fontSize);
+      rainDrops = [];
+      for (let i = 0; i < columns; i++) {
+        rainDrops[i] = Math.floor(Math.random() * -50);
+      }
+    }
+
+    function drawMatrix() {
+      matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+      matrixCtx.fillStyle = '#00FF66';
+      matrixCtx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < rainDrops.length; i++) {
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        const x = i * fontSize;
+        const y = rainDrops[i] * fontSize;
+
+        // Lead character brightness
+        if (Math.random() > 0.9) {
+          matrixCtx.fillStyle = '#ffffff';
+        } else {
+          matrixCtx.fillStyle = '#00ff66';
+        }
+
+        matrixCtx.fillText(text, x, y);
+
+        if (y > matrixCanvas.height && Math.random() > 0.975) {
+          rainDrops[i] = 0;
+        }
+        rainDrops[i]++;
+      }
+    }
+
+    function toggleMatrixMode(enable) {
+      if (enable === undefined) isMatrixActive = !isMatrixActive;
+      else isMatrixActive = enable;
+
+      if (isMatrixActive) {
+        initMatrixCanvas();
+        matrixCanvas.style.display = 'block';
+        matrixExitHint.style.display = 'block';
+        if (!matrixInterval) {
+          matrixInterval = setInterval(drawMatrix, 30);
+        }
+      } else {
+        matrixCanvas.style.display = 'none';
+        matrixExitHint.style.display = 'none';
+        if (matrixInterval) {
+          clearInterval(matrixInterval);
+          matrixInterval = null;
+        }
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      if (isMatrixActive) initMatrixCanvas();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isMatrixActive) {
+        toggleMatrixMode(false);
+      }
+    });
+
+    /* Global click focus on input */
+    document.addEventListener('click', (e) => {
+      if (!isMatrixActive && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+        cmdInput.focus();
+      }
+    });
+
+    /* Initial Focus */
+    window.addEventListener('load', () => {
+      cmdInput.focus();
+    });
+  </script>
+</body>
+</html>
