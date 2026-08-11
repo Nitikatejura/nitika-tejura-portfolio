@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nitika Tejura | Security Terminal & Portfolio v1.0</title>
-  <meta name="description" content="Interactive Retro-Cyberpunk Terminal Portfolio of Nitika Tejura - Computer Engineering Student & Cybersecurity Enthusiast. Proficient in SIEM, Splunk, Wazuh, Wireshark & Pentesting.">
+  <title>Nitika Tejura | Enterprise SOC Terminal & Cybersecurity Portfolio v2.0</title>
+  <meta name="description" content="Enterprise-Grade SOC Terminal & Portfolio of Nitika Tejura - Computer Engineering Student & Cybersecurity Enthusiast. SIEM, Splunk, Wazuh, Wireshark, NIST CSF, MITRE ATT&CK & SOC Operations.">
   <meta name="author" content="Nitika Tejura">
+  
   <!-- Google Fonts: JetBrains Mono & Fira Code -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,11 +14,12 @@
   
   <style>
     /* ==========================================================================
-       DESIGN SYSTEM & TERMINAL STYLES (Cyberpunk Dark Mode)
+       DESIGN SYSTEM & THEME ENGINE (Enterprise Dark Mode)
        ========================================================================== */
     :root {
+      /* Theme: Cyberpunk (Default) */
       --bg-color: #06080a;
-      --term-bg: rgba(10, 14, 18, 0.95);
+      --term-bg: rgba(10, 14, 18, 0.96);
       --term-border: #00ff66;
       --text-main: #00ff66;
       --text-dim: #00b347;
@@ -25,33 +27,62 @@
       --accent-amber: #ffb703;
       --accent-crimson: #ff2a6d;
       --accent-purple: #bd00ff;
+      --card-bg: rgba(0, 255, 102, 0.04);
+      --card-border: rgba(0, 255, 102, 0.2);
       --glow-color: rgba(0, 255, 102, 0.4);
       --glow-cyan: rgba(0, 229, 255, 0.4);
       --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-      --scanline-opacity: 0.25;
+      --scanline-opacity: 0.22;
     }
 
-    /* Themes */
-    body.theme-amber {
-      --term-border: #ffb703;
-      --text-main: #ffb703;
-      --text-dim: #cc9200;
-      --accent-cyan: #ff7b00;
-      --glow-color: rgba(255, 183, 3, 0.4);
+    /* Theme: Matrix Classic */
+    body.theme-matrix {
+      --bg-color: #020b04;
+      --term-bg: rgba(4, 16, 8, 0.96);
+      --term-border: #00ff41;
+      --text-main: #00ff41;
+      --text-dim: #008f24;
+      --accent-cyan: #50ff7b;
+      --accent-amber: #00ff41;
+      --accent-crimson: #003b00;
+      --card-bg: rgba(0, 255, 65, 0.04);
+      --card-border: rgba(0, 255, 65, 0.2);
+      --glow-color: rgba(0, 255, 65, 0.4);
+      --glow-cyan: rgba(0, 255, 65, 0.4);
     }
-    body.theme-cyan {
-      --term-border: #00e5ff;
-      --text-main: #00e5ff;
-      --text-dim: #00a3b8;
-      --accent-cyan: #00ff66;
-      --glow-color: rgba(0, 229, 255, 0.4);
+
+    /* Theme: Dracula Cyber */
+    body.theme-dracula {
+      --bg-color: #1a1c23;
+      --term-bg: rgba(40, 42, 54, 0.96);
+      --term-border: #bd93f9;
+      --text-main: #50fa7b;
+      --text-dim: #6272a4;
+      --accent-cyan: #8be9fd;
+      --accent-amber: #ffb86c;
+      --accent-crimson: #ff5555;
+      --accent-purple: #ff79c6;
+      --card-bg: rgba(189, 147, 249, 0.05);
+      --card-border: rgba(189, 147, 249, 0.25);
+      --glow-color: rgba(189, 147, 249, 0.4);
+      --glow-cyan: rgba(139, 233, 253, 0.4);
     }
-    body.theme-crimson {
-      --term-border: #ff2a6d;
-      --text-main: #ff2a6d;
-      --text-dim: #b81c4c;
-      --accent-cyan: #00e5ff;
-      --glow-color: rgba(255, 42, 109, 0.4);
+
+    /* Theme: Nord Frost */
+    body.theme-nord {
+      --bg-color: #2e3440;
+      --term-bg: rgba(43, 48, 59, 0.96);
+      --term-border: #88c0d0;
+      --text-main: #a3be8c;
+      --text-dim: #4c566a;
+      --accent-cyan: #88c0d0;
+      --accent-amber: #ebcb8b;
+      --accent-crimson: #bf616a;
+      --accent-purple: #b48ead;
+      --card-bg: rgba(136, 192, 208, 0.05);
+      --card-border: rgba(136, 192, 208, 0.25);
+      --glow-color: rgba(136, 192, 208, 0.4);
+      --glow-cyan: rgba(129, 161, 193, 0.4);
     }
 
     * {
@@ -69,6 +100,7 @@
       font-size: 14px;
       line-height: 1.5;
       overflow: hidden;
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
 
     /* Ambient cyber background grid */
@@ -77,15 +109,15 @@
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
       background: 
-        radial-gradient(circle at 50% 50%, rgba(0, 255, 102, 0.05) 0%, transparent 70%),
-        linear-gradient(rgba(0, 255, 102, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 102, 0.03) 1px, transparent 1px);
+        radial-gradient(circle at 50% 50%, rgba(0, 255, 102, 0.04) 0%, transparent 75%),
+        linear-gradient(rgba(0, 255, 102, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 102, 0.02) 1px, transparent 1px);
       background-size: 100% 100%, 30px 30px, 30px 30px;
       z-index: 1;
       pointer-events: none;
     }
 
-    /* CRT Scanline Effect Overlay */
+    /* CRT Scanline Overlay */
     .crt-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -119,33 +151,76 @@
       100% { opacity: 0.99; }
     }
 
+    /* Top Telemetry Header Bar */
+    .telemetry-bar {
+      position: relative;
+      z-index: 15;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 95%;
+      max-width: 1250px;
+      margin: 1.5vh auto 0 auto;
+      padding: 6px 16px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 1px solid rgba(0, 255, 102, 0.3);
+      border-radius: 6px 6px 0 0;
+      font-size: 11px;
+      color: var(--accent-cyan);
+      letter-spacing: 0.5px;
+      user-select: none;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .telemetry-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-pulse {
+      width: 8px;
+      height: 8px;
+      background-color: var(--text-main);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--text-main);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.7; }
+    }
+
     .terminal-wrapper {
       position: relative;
       z-index: 10;
       display: flex;
       flex-direction: column;
       width: 95%;
-      max-width: 1200px;
-      height: 92vh;
-      margin: 4vh auto;
+      max-width: 1250px;
+      height: 88vh;
+      margin: 0 auto 2vh auto;
       background: var(--term-bg);
       border: 1px solid var(--term-border);
-      border-radius: 8px;
-      box-shadow: 0 0 25px var(--glow-color), inset 0 0 15px rgba(0, 0, 0, 0.8);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 0 30px var(--glow-color), inset 0 0 20px rgba(0, 0, 0, 0.9);
       backdrop-filter: blur(10px);
       animation: flicker 0.15s infinite alternate;
     }
 
-    /* Terminal Header Bar */
+    /* Terminal Window Header Bar */
     .terminal-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 10px 16px;
-      background: rgba(0, 0, 0, 0.6);
-      border-bottom: 1px solid rgba(0, 255, 102, 0.2);
-      border-top-left-radius: 7px;
-      border-top-right-radius: 7px;
+      background: rgba(0, 0, 0, 0.75);
+      border-bottom: 1px solid rgba(0, 255, 102, 0.25);
       user-select: none;
     }
 
@@ -164,7 +239,7 @@
       transition: transform 0.2s ease, filter 0.2s ease;
     }
     .control-btn:hover {
-      transform: scale(1.2);
+      transform: scale(1.25);
       filter: brightness(1.3);
     }
     .btn-close { background-color: #ff5f56; box-shadow: 0 0 6px #ff5f56; }
@@ -173,7 +248,7 @@
 
     .window-title {
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--accent-cyan);
       letter-spacing: 1px;
       text-transform: uppercase;
@@ -183,7 +258,7 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .icon-btn {
@@ -192,7 +267,7 @@
       color: var(--text-main);
       font-family: var(--font-mono);
       font-size: 11px;
-      padding: 4px 8px;
+      padding: 4px 10px;
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -204,7 +279,7 @@
     .icon-btn:hover {
       background: var(--term-border);
       color: #000;
-      box-shadow: 0 0 10px var(--glow-color);
+      box-shadow: 0 0 12px var(--glow-color);
     }
 
     /* Quick Action Command Chips Bar */
@@ -213,7 +288,7 @@
       flex-wrap: wrap;
       gap: 6px;
       padding: 8px 16px;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.5);
       border-bottom: 1px solid rgba(0, 255, 102, 0.15);
       user-select: none;
     }
@@ -227,12 +302,12 @@
     }
 
     .chip-btn {
-      background: rgba(0, 229, 255, 0.05);
-      border: 1px solid rgba(0, 229, 255, 0.3);
+      background: rgba(0, 229, 255, 0.06);
+      border: 1px solid rgba(0, 229, 255, 0.35);
       color: var(--accent-cyan);
       font-family: var(--font-mono);
       font-size: 11px;
-      padding: 3px 8px;
+      padding: 3px 9px;
       border-radius: 3px;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -241,8 +316,20 @@
     .chip-btn:hover {
       background: var(--accent-cyan);
       color: #000;
-      box-shadow: 0 0 8px var(--glow-cyan);
+      box-shadow: 0 0 10px var(--glow-cyan);
       transform: translateY(-1px);
+    }
+
+    .chip-btn.btn-highlight {
+      background: rgba(0, 255, 102, 0.12);
+      border-color: var(--text-main);
+      color: var(--text-main);
+    }
+
+    .chip-btn.btn-highlight:hover {
+      background: var(--text-main);
+      color: #000;
+      box-shadow: 0 0 10px var(--glow-color);
     }
 
     /* Terminal Output Container */
@@ -261,7 +348,7 @@
       width: 8px;
     }
     .terminal-body::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
     }
     .terminal-body::-webkit-scrollbar-thumb {
       background: var(--term-border);
@@ -293,10 +380,6 @@
       font-size: 14px;
     }
 
-    .cmd-entry {
-      margin-bottom: 10px;
-    }
-
     .prompt-line {
       display: flex;
       align-items: center;
@@ -326,7 +409,7 @@
       word-wrap: break-word;
     }
 
-    /* Text formatting utilities */
+    /* Text Formatting Utilities */
     .text-highlight { color: var(--text-main); font-weight: bold; }
     .text-cyan { color: var(--accent-cyan); }
     .text-amber { color: var(--accent-amber); }
@@ -361,13 +444,13 @@
     /* Tables & Cards */
     .cmd-table {
       width: 100%;
-      max-width: 800px;
+      max-width: 900px;
       border-collapse: collapse;
       margin-top: 8px;
     }
 
     .cmd-table td, .cmd-table th {
-      padding: 6px 12px;
+      padding: 7px 12px;
       text-align: left;
       border-bottom: 1px solid rgba(0, 255, 102, 0.15);
     }
@@ -380,35 +463,30 @@
       border-bottom: 1px solid var(--accent-cyan);
     }
 
-    .cmd-name {
-      color: var(--text-main);
-      font-weight: bold;
-    }
-
-    .skill-card {
-      background: rgba(0, 255, 102, 0.03);
-      border: 1px solid rgba(0, 255, 102, 0.2);
+    .skill-card, .mitre-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       border-radius: 4px;
-      padding: 10px 14px;
-      margin-bottom: 8px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
     }
 
     .skill-title {
       color: var(--accent-cyan);
       font-weight: bold;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
     .project-card, .exp-card {
-      background: rgba(10, 20, 25, 0.7);
+      background: rgba(10, 20, 25, 0.75);
       border-left: 3px solid var(--text-main);
       border-right: 1px solid rgba(0, 255, 102, 0.15);
       border-top: 1px solid rgba(0, 255, 102, 0.15);
       border-bottom: 1px solid rgba(0, 255, 102, 0.15);
-      padding: 12px 16px;
+      padding: 14px 18px;
       margin-bottom: 12px;
       border-radius: 0 6px 6px 0;
     }
@@ -433,9 +511,21 @@
       color: var(--accent-cyan);
       border: 1px solid var(--accent-cyan);
       font-size: 11px;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 3px;
-      margin-right: 4px;
+      margin-right: 5px;
+      margin-top: 4px;
+    }
+
+    .badge-mitre {
+      display: inline-block;
+      background: rgba(255, 183, 3, 0.15);
+      color: var(--accent-amber);
+      border: 1px solid var(--accent-amber);
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      margin-right: 5px;
       margin-top: 4px;
     }
 
@@ -445,7 +535,7 @@
       align-items: center;
       gap: 8px;
       padding: 10px 16px 14px 16px;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       border-top: 1px solid rgba(0, 255, 102, 0.2);
     }
 
@@ -469,7 +559,7 @@
       caret-color: var(--text-main);
     }
 
-    /* Matrix Rain Fullscreen Overlay Canvas */
+    /* Matrix Rain Fullscreen Canvas */
     #matrixCanvas {
       position: fixed;
       top: 0; left: 0;
@@ -485,7 +575,7 @@
       top: 20px;
       right: 20px;
       z-index: 95;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       color: var(--text-main);
       border: 1px solid var(--text-main);
       padding: 8px 16px;
@@ -496,7 +586,62 @@
       box-shadow: 0 0 15px var(--glow-color);
     }
 
-    /* Mobile virtual keyboard shortcut row */
+    /* Resume Export Modal Window */
+    .export-modal-backdrop {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .export-modal-backdrop.active {
+      display: flex;
+    }
+
+    .export-modal {
+      width: 90%;
+      max-width: 700px;
+      background: var(--term-bg);
+      border: 1px solid var(--term-border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 0 35px var(--glow-color);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .export-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--term-border);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .modal-btn {
+      background: var(--text-main);
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      font-family: var(--font-mono);
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .modal-btn:hover {
+      box-shadow: 0 0 12px var(--glow-color);
+      transform: translateY(-1px);
+    }
+
+    /* Mobile virtual toolbar */
     .mobile-nav-bar {
       display: none;
       padding: 6px 12px;
@@ -508,9 +653,17 @@
     }
 
     @media (max-width: 768px) {
+      .telemetry-bar {
+        font-size: 9px;
+        padding: 4px 10px;
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+      }
+
       .terminal-wrapper {
         width: 100%;
-        height: 100vh;
+        height: 94vh;
         margin: 0;
         border-radius: 0;
         border: none;
@@ -521,7 +674,7 @@
       }
 
       .window-title {
-        font-size: 11px;
+        font-size: 10px;
       }
 
       .ascii-banner {
@@ -548,10 +701,49 @@
     ⚡ MATRIX MODE ACTIVE - Click here or press ESC / type 'exit' to return
   </div>
 
+  <!-- Resume Export Modal -->
+  <div class="export-modal-backdrop" id="exportModalBackdrop">
+    <div class="export-modal">
+      <div class="export-header">
+        <h3 class="text-highlight">📄 NITIKA TEJURA :: RESUME ARTIFACT EXPORT</h3>
+        <button class="icon-btn" onclick="closeExportModal()">✖ CLOSE</button>
+      </div>
+      <div style="margin-bottom: 16px; color: #ccc; font-size: 13px; line-height: 1.6;">
+        Choose format to export official resume data & security profile:
+      </div>
+      <div style="display:flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+        <button class="modal-btn" onclick="downloadResumeJSON()">📥 Export JSON Spec</button>
+        <button class="modal-btn" style="background:var(--accent-cyan);" onclick="copyResumeText()">📋 Copy Plaintext Resume</button>
+        <button class="modal-btn" style="background:var(--accent-amber);" onclick="window.print()">🖨️ Print / Save PDF</button>
+      </div>
+      <div class="skill-card" style="font-size:12px; white-space:pre-wrap;" id="resumePreviewBox"></div>
+    </div>
+  </div>
+
+  <!-- Top Telemetry SIEM Header Bar -->
+  <header class="telemetry-bar">
+    <div class="telemetry-item">
+      <span class="status-pulse"></span>
+      <span class="text-highlight">[STATUS: ACTIVE]</span>
+    </div>
+    <div class="telemetry-item">
+      <span>[NODE: SOC-ASIA-SOUTH]</span>
+    </div>
+    <div class="telemetry-item">
+      <span class="text-cyan">[SIEM: WAZUH ACTIVE]</span>
+    </div>
+    <div class="telemetry-item">
+      <span>[LOGS: <span id="logCounter" class="text-amber">18,492</span>]</span>
+    </div>
+    <div class="telemetry-item" style="margin-left: auto;">
+      <span class="text-gold">🕒 <span id="liveClock">2026-08-11 00:00:00 UTC</span></span>
+    </div>
+  </header>
+
   <!-- Main Terminal App Window -->
   <div class="terminal-wrapper" id="termWrapper">
     
-    <!-- Top Header Bar -->
+    <!-- Window Header Bar -->
     <header class="terminal-header">
       <div class="window-controls">
         <span class="control-btn btn-close" title="Clear Buffer" onclick="handleClear()"></span>
@@ -560,7 +752,7 @@
       </div>
 
       <div class="window-title">
-        <span>🔒 NITIKA TEJURA :: SEC-OPS TERMINAL v1.0</span>
+        <span>🔒 NITIKA TEJURA :: SOC OPERATIONS TERMINAL v2.0</span>
       </div>
 
       <div class="header-actions">
@@ -571,14 +763,17 @@
           🔊 <span id="audioStatus">SFX OFF</span>
         </button>
         <button class="icon-btn" onclick="cycleTheme()" title="Switch Color Theme">
-          🎨 <span id="themeName">CYBER</span>
+          🎨 <span id="themeName">CYBERPUNK</span>
+        </button>
+        <button class="icon-btn" onclick="openExportModal()" title="Export Resume">
+          📄 EXPORT
         </button>
       </div>
     </header>
 
     <!-- Quick Action Chips (Desktop Navigation Toolbar) -->
     <div class="command-chips-bar">
-      <span class="chip-label">QUICK COMMANDS:</span>
+      <span class="chip-label">COMMANDS:</span>
       <button class="chip-btn" onclick="runChipCmd('help')">help</button>
       <button class="chip-btn" onclick="runChipCmd('about')">about</button>
       <button class="chip-btn" onclick="runChipCmd('skills')">skills</button>
@@ -586,6 +781,10 @@
       <button class="chip-btn" onclick="runChipCmd('experience')">experience</button>
       <button class="chip-btn" onclick="runChipCmd('certs')">certs</button>
       <button class="chip-btn" onclick="runChipCmd('contact')">contact</button>
+      <button class="chip-btn btn-highlight" onclick="runChipCmd('simulate')">🎯 simulate</button>
+      <button class="chip-btn btn-highlight" onclick="runChipCmd('mitre')">🛡️ mitre</button>
+      <button class="chip-btn btn-highlight" onclick="runChipCmd('scan')">🔍 scan</button>
+      <button class="chip-btn btn-highlight" onclick="runChipCmd('proof')">🏆 proof</button>
       <button class="chip-btn" onclick="runChipCmd('matrix')">matrix</button>
       <button class="chip-btn" onclick="runChipCmd('clear')">clear</button>
     </div>
@@ -603,10 +802,10 @@
 
       <div class="greeting-box">
         <div class="greeting-text" id="typewriterTarget">
-          Initializing Nitika Tejura Security Terminal v1.0...
+          Initializing SOC Operational Node :: Splunk SIEM Active :: Wazuh Telemetry Connected...
         </div>
         <div class="text-dim" style="font-size: 12px; margin-top: 4px;">
-          Type <span class="clickable-cmd" onclick="runChipCmd('help')">help</span> to view available security commands or click quick tags above.
+          Type <span class="clickable-cmd" onclick="runChipCmd('help')">help</span> for commands, <span class="clickable-cmd" onclick="runChipCmd('simulate')">simulate</span> for SOC IR triage, or <span class="clickable-cmd" onclick="runChipCmd('mitre')">mitre</span> for ATT&CK mapping.
         </div>
       </div>
 
@@ -619,10 +818,11 @@
       <button class="chip-btn" onclick="runChipCmd('about')">about</button>
       <button class="chip-btn" onclick="runChipCmd('skills')">skills</button>
       <button class="chip-btn" onclick="runChipCmd('projects')">projects</button>
-      <button class="chip-btn" onclick="runChipCmd('experience')">exp</button>
+      <button class="chip-btn btn-highlight" onclick="runChipCmd('simulate')">simulate</button>
+      <button class="chip-btn btn-highlight" onclick="runChipCmd('mitre')">mitre</button>
+      <button class="chip-btn btn-highlight" onclick="runChipCmd('scan')">scan</button>
       <button class="chip-btn" onclick="runChipCmd('certs')">certs</button>
       <button class="chip-btn" onclick="runChipCmd('contact')">contact</button>
-      <button class="chip-btn" onclick="runChipCmd('matrix')">matrix</button>
     </div>
 
     <!-- Interactive Input Bar -->
@@ -634,7 +834,7 @@
         type="text" 
         id="cmdInput" 
         class="cmd-input" 
-        placeholder="Type a command (e.g. 'help', 'projects', 'skills')..." 
+        placeholder="Type a command (e.g. 'simulate', 'mitre', 'scan', 'projects')..." 
         autocomplete="off" 
         autocorrect="off" 
         autocapitalize="none" 
@@ -647,7 +847,7 @@
   <!-- JavaScript Engine -->
   <script>
     /* ==========================================================================
-       PORTFOLIO RESUME DATA & DATA STORES
+       ENTERPRISE DATA & RESUME STORE
        ========================================================================== */
     const RESUME_DATA = {
       name: "Nitika Tejura",
@@ -655,7 +855,7 @@
       contact: {
         email: "nitika.tejura8@gmail.com",
         phone: "+91 8487 948424",
-        tryhackme: "Top 8%",
+        tryhackme: "Top 8% Global Leaderboard",
         linkedin: "https://linkedin.com/in/nitikatejura",
         github: "https://github.com/Nitikatejura"
       },
@@ -667,31 +867,34 @@
         period: "2023 – 2027"
       },
       skills: {
-        "Security Operations": ["Splunk (SIEM)", "Wazuh"],
-        "Networking & Pentesting": ["Wireshark", "Nmap", "Burp Suite"],
-        "Cybersecurity Frameworks": ["NIST CSF", "ISO 27001", "OWASP Top 10"],
-        "Programming & Scripting": ["Python", "Bash"],
-        "Soft Skills": ["Communication", "Adaptability", "Teamwork"]
+        "Security Operations": ["Splunk (SIEM)", "Wazuh Threat Monitoring"],
+        "Networking & Pentesting": ["Wireshark Traffic Analysis", "Nmap", "Burp Suite"],
+        "Cybersecurity Frameworks": ["NIST CSF", "ISO 27001", "OWASP Top 10", "MITRE ATT&CK"],
+        "Programming & Scripting": ["Python", "Bash Automation"],
+        "Soft Skills": ["Communication", "Adaptability", "Teamwork & Triage Leadership"]
       },
       projects: [
         {
           name: "Secure File Sharing System",
-          tech: "AES-256 Encryption, TLS 1.3, Zero-Knowledge Architecture, SHA-256 Hashing",
+          tech: "AES-256 Encryption, TLS 1.3, Zero-Knowledge Principles, SHA-256 Hashing",
           desc: "High-security architecture designed for protected file exchange using AES-256 encryption at rest, TLS 1.3 in transit, Zero-Knowledge principles, and cryptographic SHA-256 integrity verification.",
-          securityFeatures: ["AES-256 Encryption", "TLS 1.3 Protocol", "Zero-Knowledge Proofs", "SHA-256 Hashing"]
+          securityFeatures: ["AES-256 Encryption", "TLS 1.3 Protocol", "Zero-Knowledge Proofs", "SHA-256 Hashing"],
+          mitre: ["TA0009 - Exfiltration Defense", "TA0006 - Credential Access Prevention"]
         },
         {
           name: "AyurSutra (Panchakarma Patient Management System)",
-          tech: "Role-Based Access Control (RBAC), Encrypted Data Storage, Audit Logging",
+          tech: "Role-Based Access Control (RBAC), Encrypted Data Storage, Audit Trail Logging",
           desc: "Secure scheduling and healthcare management platform built for sensitive patient records with granular Role-Based Access Control (RBAC) and privacy compliance.",
-          securityFeatures: ["Role-Based Access Control (RBAC)", "Patient Data Privacy", "Audit Trail Logging"]
+          securityFeatures: ["Role-Based Access Control (RBAC)", "Patient Data Privacy", "Audit Trail Logging"],
+          mitre: ["TA0004 - Privilege Escalation Defense", "TA0005 - Defense Evasion Prevention"]
         },
         {
           name: "Aarogya Mitra (AI Healthcare Chatbot)",
           tech: "Python, Natural Language Processing (NLP), AI Decision Trees",
           desc: "Python-based NLP model providing preliminary health consultations. Recognized for innovation and accuracy.",
           achievement: "🏆 Ranked Top 19 out of 170 teams in Maverick Effect AI Challenge, Gujarat.",
-          securityFeatures: ["Data Sanitization", "NLP Logic Trees", "Secure Telemetry"]
+          securityFeatures: ["Data Sanitization", "NLP Logic Trees", "Secure Telemetry"],
+          mitre: ["TA0007 - Discovery Protection", "TA0011 - Command & Control Detection"]
         }
       ],
       experience: [
@@ -724,20 +927,22 @@
       ]
     };
 
-    /* Supported Commands Registry */
+    /* Registry of Supported Commands */
     const COMMANDS = [
       'help', 'about', 'skills', 'projects', 'experience', 
       'certs', 'contact', 'clear', 'sudo', 'matrix', 'theme', 
-      'banner', 'whoami', 'date', 'socials'
+      'banner', 'whoami', 'date', 'simulate', 'playbook', 
+      'mitre', 'scan', 'proof', 'artifacts', 'export', 'download', 'sound', 'sfx'
     ];
 
-    /* History & State */
+    /* History & State Store */
     let commandHistory = [];
     let historyIndex = -1;
     let sfxEnabled = false;
     let crtEnabled = true;
-    const themes = ['cyber', 'amber', 'cyan', 'crimson'];
+    const themeModes = ['cyberpunk', 'matrix', 'dracula', 'nord'];
     let currentThemeIndex = 0;
+    let logCount = 18492;
 
     /* Web Audio API retro sound click generator */
     let audioCtx = null;
@@ -748,19 +953,43 @@
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'square';
-        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.04);
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+        osc.frequency.setValueAtTime(750, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.035);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.035);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.04);
+        osc.stop(audioCtx.currentTime + 0.035);
       } catch(e) {}
     }
 
+    /* Live Telemetry Clock & Log Counter */
+    function startTelemetryClock() {
+      const clockElem = document.getElementById('liveClock');
+      const logElem = document.getElementById('logCounter');
+
+      setInterval(() => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const secs = String(now.getSeconds()).padStart(2, '0');
+        
+        clockElem.innerText = `${year}-${month}-${day} ${hrs}:${mins}:${secs} IST`;
+      }, 1000);
+
+      // Periodically increment logs to mimic real SIEM ingestion
+      setInterval(() => {
+        logCount += Math.floor(Math.random() * 3) + 1;
+        logElem.innerText = logCount.toLocaleString();
+      }, 4000);
+    }
+
     /* ==========================================================================
-       COMMAND PARSER & PROCESSOR
+       COMMAND PARSER ENGINE
        ========================================================================== */
     const cmdInput = document.getElementById('cmdInput');
     const outputHistory = document.getElementById('outputHistory');
@@ -825,6 +1054,8 @@
         <span class="executed-cmd">${escapeHTML(cmdText)}</span>
       `;
       outputHistory.appendChild(line);
+      logCount += 1;
+      document.getElementById('logCounter').innerText = logCount.toLocaleString();
     }
 
     function appendResponse(htmlContent) {
@@ -857,6 +1088,7 @@
 
       const parts = cmdLine.toLowerCase().trim().split(/\s+/);
       const mainCmd = parts[0];
+      const subArg = parts[1] || '';
 
       switch(mainCmd) {
         case 'help':
@@ -883,6 +1115,29 @@
         case 'socials':
           renderContact();
           break;
+        case 'simulate':
+        case 'playbook':
+          renderSOCSimulator(subArg);
+          break;
+        case 'mitre':
+          renderMitreTable();
+          break;
+        case 'scan':
+        case 'nmap':
+          runPortScan();
+          break;
+        case 'proof':
+        case 'artifacts':
+          renderProofArtifacts();
+          break;
+        case 'export':
+        case 'download':
+          openExportModal();
+          break;
+        case 'sound':
+        case 'sfx':
+          toggleAudio();
+          break;
         case 'clear':
           handleClear();
           break;
@@ -893,13 +1148,14 @@
           toggleMatrixMode(true);
           break;
         case 'theme':
-          cycleTheme();
+          if (subArg) setThemeMode(subArg);
+          else cycleTheme();
           break;
         case 'banner':
           renderBanner();
           break;
         case 'whoami':
-          appendResponse(`<div class="text-cyan">guest@sec-terminal :: Privilege Level: Visitor [Read-Only]</div>`);
+          appendResponse(`<div class="text-cyan">nitika@sec-ops :: Role: SOC Tier 1/2 Incident Responder Candidate</div>`);
           break;
         case 'date':
           appendResponse(`<div class="text-dim">System Timestamp: ${new Date().toUTCString()}</div>`);
@@ -907,18 +1163,18 @@
         default:
           appendResponse(`
             <div class="text-crimson">Command not recognized: '${escapeHTML(mainCmd)}'</div>
-            <div class="text-dim">Type <span class="clickable-cmd" onclick="runChipCmd('help')">help</span> for available security commands.</div>
+            <div class="text-dim">Type <span class="clickable-cmd" onclick="runChipCmd('help')">help</span> for security commands or <span class="clickable-cmd" onclick="runChipCmd('simulate')">simulate</span> for SOC IR triage.</div>
           `);
       }
     }
 
     /* ==========================================================================
-       COMMAND OUTPUT RENDERERS
+       COMMAND OUTPUT RENDERERS & SIMULATORS
        ========================================================================== */
 
     function renderHelp() {
       const html = `
-        <div class="text-highlight" style="margin-bottom:6px;">AVAILABLE SECURITY & SYSTEM COMMANDS:</div>
+        <div class="text-highlight" style="margin-bottom:6px;">ENTERPRISE SOC SECURITY COMMAND MATRIX:</div>
         <table class="cmd-table">
           <thead>
             <tr>
@@ -928,44 +1184,60 @@
           </thead>
           <tbody>
             <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('simulate')">simulate</span></td>
+              <td>🎯 Interactive SOC Incident Response & Threat Triage Simulator (NIST SP 800-61).</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('mitre')">mitre</span></td>
+              <td>🛡️ MITRE ATT&CK Framework Mapping (Tactics & Defense Techniques).</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('scan')">scan</span></td>
+              <td>🔍 Interactive Nmap Port Scanner simulation discovering Nitika's service stack.</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('proof')">proof</span></td>
+              <td>🏆 TryHackMe standing (Top 8%), GitHub repos & verified CTF writeups.</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('export')">export</span></td>
+              <td>📄 Download / Copy MNC-ready Resume specification artifact.</td>
+            </tr>
+            <tr>
               <td><span class="clickable-cmd" onclick="runChipCmd('about')">about</span></td>
-              <td>Profile summary, education, and TryHackMe statistics.</td>
+              <td>Profile summary, BE Computer Engineering at S.P.B. Patel (CGPA 9.13).</td>
             </tr>
             <tr>
               <td><span class="clickable-cmd" onclick="runChipCmd('skills')">skills</span></td>
-              <td>Categorized breakdown of SIEM tools, pentesting, frameworks & coding.</td>
+              <td>Splunk (SIEM), Wazuh, Wireshark, NIST CSF, ISO 27001, Python, Bash.</td>
             </tr>
             <tr>
               <td><span class="clickable-cmd" onclick="runChipCmd('projects')">projects</span></td>
-              <td>Security projects (AES-256 system, AyurSutra RBAC, Aarogya Mitra AI).</td>
+              <td>Secure File Sharing (AES-256/TLS 1.3), AyurSutra (RBAC), Aarogya Mitra AI.</td>
             </tr>
             <tr>
               <td><span class="clickable-cmd" onclick="runChipCmd('experience')">experience</span></td>
-              <td>IBM SkillsBuild Intern, SIT E-Cell Vice President & TEDx Anchor.</td>
+              <td>IBM SkillsBuild AI Intern, Vice President SIT E-Cell, TEDx Lead Anchor.</td>
             </tr>
             <tr>
               <td><span class="clickable-cmd" onclick="runChipCmd('certs')">certs</span></td>
-              <td>CEH (In Progress), Tutedude, IBM, TCS/Forage & Azure certifications.</td>
+              <td>CEH (In Progress), Tutedude, TCS/Forage, IBM, Azure Data Fundamentals.</td>
             </tr>
             <tr>
               <td><span class="clickable-cmd" onclick="runChipCmd('contact')">contact</span></td>
-              <td>Interactive communication endpoints (Email, Phone, GitHub, LinkedIn).</td>
+              <td>Direct Email, Phone (+91 8487 948424), LinkedIn, GitHub endpoints.</td>
+            </tr>
+            <tr>
+              <td><span class="clickable-cmd" onclick="runChipCmd('theme')">theme &lt;mode&gt;</span></td>
+              <td>Switch theme: <span class="clickable-cmd" onclick="runChipCmd('theme cyberpunk')">cyberpunk</span> | <span class="clickable-cmd" onclick="runChipCmd('theme matrix')">matrix</span> | <span class="clickable-cmd" onclick="runChipCmd('theme dracula')">dracula</span> | <span class="clickable-cmd" onclick="runChipCmd('theme nord')">nord</span>.</td>
             </tr>
             <tr>
               <td><span class="clickable-cmd" onclick="runChipCmd('matrix')">matrix</span></td>
-              <td>Triggers fullscreen Cyberpunk Matrix Digital Rain visualization.</td>
-            </tr>
-            <tr>
-              <td><span class="clickable-cmd" onclick="runChipCmd('theme')">theme</span></td>
-              <td>Cycles color themes (Green Cyber, Amber, Cyan, Crimson).</td>
+              <td>Fullscreen Cyber Matrix Digital Rain canvas visualizer.</td>
             </tr>
             <tr>
               <td><span class="clickable-cmd" onclick="runChipCmd('sudo')">sudo</span></td>
-              <td>Execute superuser command (Easter Egg).</td>
-            </tr>
-            <tr>
-              <td><span class="clickable-cmd" onclick="runChipCmd('clear')">clear</span></td>
-              <td>Wipes terminal buffer.</td>
+              <td>Superuser escalation attempt (SIEM Logged Easter Egg).</td>
             </tr>
           </tbody>
         </table>
@@ -973,6 +1245,267 @@
       appendResponse(html);
     }
 
+    /* 1. SOC INCIDENT RESPONSE TRIAGE SIMULATOR */
+    function renderSOCSimulator(option) {
+      if (!option) {
+        const html = `
+          <div class="skill-card" style="border-color: var(--accent-crimson);">
+            <div class="text-crimson" style="font-size: 15px; font-weight: bold; margin-bottom: 6px;">
+              🚨 [SIEM HIGH ALERT] INCIDENT TRIAGE PLAYBOOK SIMULATION
+            </div>
+            <div style="margin-bottom: 8px;">
+              <span class="text-amber">ALERT ID:</span> #INC-2026-8891 | <span class="text-cyan">SOURCE: WAZUH AGENT #09</span>
+            </div>
+            <div style="background: rgba(255, 42, 109, 0.1); padding: 10px; border-left: 3px solid var(--accent-crimson); margin-bottom: 12px;">
+              <strong>DETECTION:</strong> Suspicious Obfuscated PowerShell execution detected on <code>WORKSTATION-09</code>.<br>
+              <strong>MITRE ATT&CK:</strong> <span class="badge-mitre">T1059.001 - Command & Scripting Interpreter</span> <span class="badge-mitre">TA0002 - Execution</span><br>
+              <strong>PARENT PROCESS:</strong> <code>wmiprvse.exe</code> (PID: 4920) ➡️ <code>powershell.exe -enc AAB...</code>
+            </div>
+
+            <div class="text-highlight" style="margin-bottom: 8px;">SELECT SOC CONTAINMENT ACTION (Type option number or click below):</div>
+
+            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+              <button class="chip-btn" style="text-align:left; padding:6px 12px;" onclick="runChipCmd('simulate 1')">
+                <strong>[1] Isolate Endpoint from Network</strong> (NIST SP 800-61 Containment Phase)
+              </button>
+              <button class="chip-btn" style="text-align:left; padding:6px 12px;" onclick="runChipCmd('simulate 2')">
+                <strong>[2] Dump Process Memory & Volatility Analysis</strong> (Forensic Analysis Phase)
+              </button>
+              <button class="chip-btn" style="text-align:left; padding:6px 12px;" onclick="runChipCmd('simulate 3')">
+                <strong>[3] Block Remote C2 IP via Perimeter Firewall</strong> (Egress Threat Suppression)
+              </button>
+            </div>
+          </div>
+        `;
+        appendResponse(html);
+      } else if (option === '1') {
+        const html = `
+          <div class="skill-card" style="border-color: var(--text-main);">
+            <div class="text-highlight" style="font-size:14px; margin-bottom:4px;">
+              ✅ ACTION EXECUTED: NETWORK ISOLATION INITIATED
+            </div>
+            <div style="margin-bottom:6px;">
+              <strong>NIST SP 800-61 Compliance:</strong> Section 3.3 Containment Strategy Implemented.
+            </div>
+            <div class="text-dim" style="margin-bottom:8px;">
+              Wazuh Active Response Agent issued <code>netsh advfirewall</code> isolate rule to WORKSTATION-09. Lateral movement stopped dead in its tracks.
+            </div>
+            <div>
+              <span class="badge-sec">Result: SUCCESS</span>
+              <span class="badge-mitre">MITRE Mitigation: M1037 - Filter Network Traffic</span>
+            </div>
+          </div>
+        `;
+        appendResponse(html);
+      } else if (option === '2') {
+        const html = `
+          <div class="skill-card" style="border-color: var(--accent-cyan);">
+            <div class="text-cyan" style="font-size:14px; font-weight:bold; margin-bottom:4px;">
+              🔬 ACTION EXECUTED: FORENSIC MEMORY DUMP CREATED
+            </div>
+            <div style="margin-bottom:6px;">
+              <strong>Memory Capture:</strong> <code>WORKSTATION-09_memdump.raw</code> generated for Volatility analysis.
+            </div>
+            <div class="text-dim" style="margin-bottom:8px;">
+              Extracted Cobalt Strike Beacon payload DLL from memory address 0x00400000. SHA-256 hash sent to Splunk SIEM lookup.
+            </div>
+            <div>
+              <span class="badge-sec">Result: FORENSIC DATA CAPTURED</span>
+              <span class="badge-mitre">MITRE Technique: T1003.001 - LSASS Dump Prevention</span>
+            </div>
+          </div>
+        `;
+        appendResponse(html);
+      } else if (option === '3') {
+        const html = `
+          <div class="skill-card" style="border-color: var(--accent-amber);">
+            <div class="text-amber" style="font-size:14px; font-weight:bold; margin-bottom:4px;">
+              🛡️ ACTION EXECUTED: PERIMETER C2 BLOCK RULE DEPLOYED
+            </div>
+            <div style="margin-bottom:6px;">
+              <strong>Firewall Egress Rule:</strong> Remote IPv4 <code>185.220.101.5:443</code> blocked globally.
+            </div>
+            <div class="text-dim" style="margin-bottom:8px;">
+              Splunk SIEM automated correlation rule pushed updated IOC block list to Cisco ASA / Palo Alto edge routers.
+            </div>
+            <div>
+              <span class="badge-sec">Result: C2 SEVERED</span>
+              <span class="badge-mitre">MITRE ATT&CK: TA0011 - Command and Control Severed</span>
+            </div>
+          </div>
+        `;
+        appendResponse(html);
+      }
+    }
+
+    /* 2. MITRE ATT&CK FRAMEWORK MAPPING */
+    function renderMitreTable() {
+      const html = `
+        <div class="text-highlight" style="margin-bottom: 8px;">🛡️ MITRE ATT&CK FRAMEWORK DEFENATIVE MAPPING:</div>
+        
+        <div class="mitre-card">
+          <div class="project-title" style="margin-bottom:6px;">🔐 Secure File Sharing System</div>
+          <div style="margin-bottom:6px;">
+            <span class="badge-mitre">TA0009 - Exfiltration Defense</span>
+            <span class="badge-mitre">TA0006 - Credential Access Prevention</span>
+            <span class="badge-sec">T1020 - Automated Exfiltration Prevention</span>
+          </div>
+          <div class="text-dim" style="font-size:12px;">
+            Enforces AES-256 encryption at rest, TLS 1.3 in transit, Zero-Knowledge cryptographic principles, and SHA-256 hashing to defeat unauthorized data theft and man-in-the-middle credential interception.
+          </div>
+        </div>
+
+        <div class="mitre-card">
+          <div class="project-title" style="margin-bottom:6px;">🏥 AyurSutra Patient Management System</div>
+          <div style="margin-bottom:6px;">
+            <span class="badge-mitre">TA0004 - Privilege Escalation Defense</span>
+            <span class="badge-mitre">TA0005 - Defense Evasion Prevention</span>
+            <span class="badge-sec">T1078 - Valid Accounts Control</span>
+          </div>
+          <div class="text-dim" style="font-size:12px;">
+            Implements strict Role-Based Access Control (RBAC), preventing vertical and horizontal privilege escalation on sensitive healthcare EHR records while maintaining immutable audit logs.
+          </div>
+        </div>
+
+        <div class="mitre-card">
+          <div class="project-title" style="margin-bottom:6px;">👁️ Splunk & Wazuh SIEM Threat Telemetry</div>
+          <div style="margin-bottom:6px;">
+            <span class="badge-mitre">TA0007 - Discovery Detection</span>
+            <span class="badge-mitre">TA0011 - Command & Control Telemetry</span>
+            <span class="badge-sec">T1059 - Command & Scripting Monitor</span>
+          </div>
+          <div class="text-dim" style="font-size:12px;">
+            Continuous endpoint event collection, Wireshark packet inspection, and real-time rule correlation to identify anomalous powershell executions, port sweeps, and unauthorized access attempts.
+          </div>
+        </div>
+      `;
+      appendResponse(html);
+    }
+
+    /* 3. INTERACTIVE NMAP PORT SCANNER */
+    function runPortScan() {
+      appendResponse(`
+        <div id="scanStatus" class="text-cyan">
+          Starting Nmap 7.94 ( https://nmap.org ) at ${new Date().toISOString()}<br>
+          Nmap scan report for nitika.sec-ops.local (127.0.0.1)<br>
+          Host is up (0.00018s latency).<br>
+          Scanning target ports...
+        </div>
+      `);
+      scrollToBottom();
+
+      setTimeout(() => {
+        const scanRes = document.getElementById('scanStatus');
+        if (scanRes) {
+          scanRes.innerHTML += `<br><span class="text-dim">Discovered open port 22/tcp on 127.0.0.1</span>`;
+          scrollToBottom();
+        }
+      }, 600);
+
+      setTimeout(() => {
+        const scanRes = document.getElementById('scanStatus');
+        if (scanRes) {
+          scanRes.innerHTML += `<br><span class="text-dim">Discovered open port 80/tcp on 127.0.0.1</span>`;
+          scrollToBottom();
+        }
+      }, 1200);
+
+      setTimeout(() => {
+        const scanRes = document.getElementById('scanStatus');
+        if (scanRes) {
+          scanRes.innerHTML += `<br><span class="text-dim">Discovered open port 514/udp on 127.0.0.1</span>`;
+          scrollToBottom();
+        }
+      }, 1800);
+
+      setTimeout(() => {
+        const scanRes = document.getElementById('scanStatus');
+        if (scanRes) {
+          scanRes.innerHTML = `
+            <div class="text-highlight" style="margin-bottom:6px;">NMAP PORT SCAN RESULTS :: TARGET: NITIKA TEJURA SERVICE STACK</div>
+            <table class="cmd-table">
+              <thead>
+                <tr>
+                  <th>PORT</th>
+                  <th>STATE</th>
+                  <th>SERVICE / SKILL CAPABILITY</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="text-cyan">22/tcp</span></td>
+                  <td><span class="text-highlight">OPEN</span></td>
+                  <td>SSH (Python Automation & Bash Scripting)</td>
+                </tr>
+                <tr>
+                  <td><span class="text-cyan">80/tcp</span></td>
+                  <td><span class="text-highlight">OPEN</span></td>
+                  <td>HTTP (Web Security & OWASP Top 10 Assessment)</td>
+                </tr>
+                <tr>
+                  <td><span class="text-cyan">443/tcp</span></td>
+                  <td><span class="text-highlight">OPEN</span></td>
+                  <td>HTTPS (TLS 1.3 Cryptography & AES-256)</td>
+                </tr>
+                <tr>
+                  <td><span class="text-cyan">514/udp</span></td>
+                  <td><span class="text-highlight">OPEN</span></td>
+                  <td>SYSLOG (Wazuh & Splunk SIEM Telemetry)</td>
+                </tr>
+                <tr>
+                  <td><span class="text-cyan">8000/tcp</span></td>
+                  <td><span class="text-highlight">OPEN</span></td>
+                  <td>SIEM DASHBOARD (NIST CSF & ISO 27001 Compliance)</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-dim" style="font-size:12px; margin-top:6px;">Nmap done: 1 IP address (1 host up) scanned in 2.14 seconds. 0 vulnerabilities unmitigated.</div>
+          `;
+          scrollToBottom();
+        }
+      }, 2400);
+    }
+
+    /* 4. PROOF & CAREER ARTIFACTS */
+    function renderProofArtifacts() {
+      const c = RESUME_DATA.contact;
+      const html = `
+        <div class="text-highlight" style="margin-bottom: 8px;">🏆 VERIFIED CAREER & TECHNICAL PROOF ARTIFACTS:</div>
+        
+        <div class="skill-card">
+          <div class="text-gold" style="font-weight:bold; font-size:14px; margin-bottom:4px;">
+            🎯 TryHackMe Global Ranking
+          </div>
+          <div>Standing: <span class="text-highlight">Top 8% Global Leaderboard</span></div>
+          <div class="text-dim" style="font-size:12px; margin-top:2px;">
+            Active badge holder in SIEM log analysis, network forensics, OWASP web application pentesting, and threat intelligence.
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="text-cyan" style="font-weight:bold; font-size:14px; margin-bottom:4px;">
+            💻 GitHub Code Repositories
+          </div>
+          <div>Profile Link: <a class="term-link" href="${c.github}" target="_blank" rel="noopener">${c.github}</a></div>
+          <div style="margin-top:4px;">
+            <span class="badge-sec">Secure-File-Sharing</span>
+            <span class="badge-sec">AyurSutra-EHR</span>
+            <span class="badge-sec">Aarogya-Mitra-AI</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="text-amber" style="font-weight:bold; font-size:14px; margin-bottom:4px;">
+            🥇 Competitive Achievements
+          </div>
+          <div>Maverick Effect AI Challenge: <span class="text-highlight">Ranked Top 19 / 170+ Teams</span></div>
+          <div>National Entrepreneurship Challenge (NEC) IIT Bombay: <span class="text-highlight">National Finals Rank 35 / 480+ Colleges</span></div>
+        </div>
+      `;
+      appendResponse(html);
+    }
+
+    /* STANDARD RESUME CONTENT RENDERERS */
     function renderAbout() {
       const html = `
         <div style="max-width:850px;">
@@ -988,16 +1521,15 @@
           </div>
 
           <div class="skill-card">
-            <div class="text-amber" style="font-weight:bold; margin-bottom: 4px;">🎓 ACADEMIC BACKGROUND</div>
+            <div class="text-amber" style="font-weight:bold; margin-bottom: 4px;">🎓 ACADEMIC DEGREES</div>
             <div><span class="text-highlight">${RESUME_DATA.education.degree}</span></div>
             <div>${RESUME_DATA.education.institution} (${RESUME_DATA.education.period})</div>
-            <div>Grade / Performance: <span class="text-cyan font-bold">CGPA ${RESUME_DATA.education.cgpa}</span></div>
+            <div>Performance Score: <span class="text-cyan font-bold">CGPA ${RESUME_DATA.education.cgpa}</span></div>
           </div>
 
           <div class="skill-card">
             <div class="text-gold" style="font-weight:bold;">🏆 TRYHACKME STANDING</div>
             <div>Platform Rank: <span class="text-highlight">Top 8% Global Cybersecurity Leaderboard</span></div>
-            <div class="text-dim" style="font-size:12px;">Active in hands-on threat hunting, network analysis, and vulnerability assessment labs.</div>
           </div>
         </div>
       `;
@@ -1040,6 +1572,7 @@
             ${p.achievement ? `<div class="text-gold" style="font-weight:bold; margin-bottom:6px;">${escapeHTML(p.achievement)}</div>` : ''}
             <div>
               ${p.securityFeatures.map(f => `<span class="badge-sec">🛡️ ${escapeHTML(f)}</span>`).join(' ')}
+              ${p.mitre ? p.mitre.map(m => `<span class="badge-mitre">🎯 ${escapeHTML(m)}</span>`).join(' ') : ''}
             </div>
           </div>
         `;
@@ -1068,13 +1601,13 @@
 
     function renderCerts() {
       let html = `
-        <div class="text-highlight" style="margin-bottom: 8px;">📜 INDUSTRY CERTIFICATIONS & TRAINING:</div>
-        <div style="max-width:700px;">
+        <div class="text-highlight" style="margin-bottom: 8px;">📜 INDUSTRY CERTIFICATIONS & CREDENTIALS:</div>
+        <div style="max-width:750px;">
       `;
 
       RESUME_DATA.certifications.forEach(c => {
         html += `
-          <div style="display:flex; justify-content:space-between; padding: 6px 10px; border-bottom:1px solid rgba(0,255,102,0.15);">
+          <div style="display:flex; justify-content:space-between; padding: 7px 10px; border-bottom:1px solid rgba(0,255,102,0.15);">
             <div>
               <span class="text-highlight">⚡ ${escapeHTML(c.name)}</span> 
               <span class="text-dim">(${escapeHTML(c.issuer)})</span>
@@ -1091,13 +1624,13 @@
     function renderContact() {
       const c = RESUME_DATA.contact;
       const html = `
-        <div class="text-highlight" style="margin-bottom: 8px;">📡 COMMUNICATIONS & SOCIAL ENDPOINTS:</div>
+        <div class="text-highlight" style="margin-bottom: 8px;">📡 COMMUNICATIONS & CONTACT ENDPOINTS:</div>
         <div class="skill-card" style="max-width: 600px;">
           <div style="margin-bottom: 6px;">📧 Email: <a class="term-link" href="mailto:${c.email}">${c.email}</a></div>
           <div style="margin-bottom: 6px;">📞 Phone: <a class="term-link" href="tel:${c.phone.replace(/\s+/g, '')}">${c.phone}</a></div>
           <div style="margin-bottom: 6px;">🔗 LinkedIn: <a class="term-link" href="${c.linkedin}" target="_blank" rel="noopener">${c.linkedin}</a></div>
           <div style="margin-bottom: 6px;">💻 GitHub: <a class="term-link" href="${c.github}" target="_blank" rel="noopener">${c.github}</a></div>
-          <div>🎯 TryHackMe Standing: <span class="text-gold font-bold">${c.tryhackme} Global</span></div>
+          <div>🎯 TryHackMe Standing: <span class="text-gold font-bold">${c.tryhackme}</span></div>
         </div>
       `;
       appendResponse(html);
@@ -1109,10 +1642,10 @@
           ⛔ ACCESS DENIED: ROOT PRIVILEGES REQUIRED
         </div>
         <div class="text-amber">
-          ALERT ID: #SEC-9942 | Incident logged & dispatched to SIEM / Splunk.
+          ALERT ID: #SEC-9942 | Incident logged & dispatched to Splunk SIEM. Security Ops team alerted.
         </div>
         <div class="text-dim" style="font-size:12px;">
-          "Nice try, hacker! Unauthorized escalation attempt has been flagged."
+          "Privilege escalation attempt flagged by Wazuh HIDS agent."
         </div>
       `;
       appendResponse(html);
@@ -1127,7 +1660,7 @@
       appendResponse(ascii);
     }
 
-    /* UI Toggles */
+    /* UI TOGGLES & THEME ENGINE */
     function toggleCRT() {
       crtEnabled = !crtEnabled;
       document.getElementById('crtOverlay').classList.toggle('disabled', !crtEnabled);
@@ -1137,20 +1670,70 @@
     function toggleAudio() {
       sfxEnabled = !sfxEnabled;
       document.getElementById('audioStatus').innerText = sfxEnabled ? 'SFX ON' : 'SFX OFF';
+      appendResponse(`<div class="text-dim">Web Audio Synth Feedback: ${sfxEnabled ? 'ENABLED 🔊' : 'MUTED 🔇'}</div>`);
     }
 
     function cycleTheme() {
-      document.body.classList.remove('theme-amber', 'theme-cyan', 'theme-crimson');
-      currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-      const theme = themes[currentThemeIndex];
-      if (theme !== 'cyber') {
-        document.body.classList.add('theme-' + theme);
+      currentThemeIndex = (currentThemeIndex + 1) % themeModes.length;
+      setThemeMode(themeModes[currentThemeIndex]);
+    }
+
+    function setThemeMode(mode) {
+      const cleanMode = mode.toLowerCase();
+      document.body.classList.remove('theme-matrix', 'theme-dracula', 'theme-nord');
+      
+      if (cleanMode === 'matrix') {
+        document.body.classList.add('theme-matrix');
+      } else if (cleanMode === 'dracula') {
+        document.body.classList.add('theme-dracula');
+      } else if (cleanMode === 'nord') {
+        document.body.classList.add('theme-nord');
       }
-      document.getElementById('themeName').innerText = theme.toUpperCase();
+
+      document.getElementById('themeName').innerText = cleanMode.toUpperCase();
+      appendResponse(`<div class="text-cyan">Theme switched to: <strong>${cleanMode.toUpperCase()}</strong></div>`);
+    }
+
+    /* RESUME EXPORT MODAL LOGIC */
+    function openExportModal() {
+      const modal = document.getElementById('exportModalBackdrop');
+      const box = document.getElementById('resumePreviewBox');
+      box.innerText = JSON.stringify(RESUME_DATA, null, 2);
+      modal.classList.add('active');
+    }
+
+    function closeExportModal() {
+      document.getElementById('exportModalBackdrop').classList.remove('active');
+    }
+
+    function downloadResumeJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(RESUME_DATA, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "Nitika_Tejura_Cybersecurity_Resume.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function copyResumeText() {
+      const plainText = `
+NAME: Nitika Tejura
+ROLE: Computer Engineering Student & Cybersecurity Enthusiast
+EMAIL: nitika.tejura8@gmail.com | PHONE: +91 8487 948424
+EDUCATION: Bachelor of Engineering in Computer Engineering, S.P.B. Patel Engineering College (CGPA: 9.13, 2023-2027)
+SUMMARY: Detail-oriented Computer Engineering student proficient in Splunk, Wazuh, Wireshark, NIST CSF, ISO 27001, Python, and Bash.
+TRYHACKME: Top 8% Global Leaderboard
+PROJECTS: Secure File Sharing System (AES-256/TLS 1.3), AyurSutra (RBAC), Aarogya Mitra AI Chatbot.
+EXPERIENCE: IBM SkillsBuild AI Intern, VP SIT E-Cell, TEDx Lead Anchor.
+CERTIFICATIONS: Certified Ethical Hacker (CEH) [In Progress], Tutedude Ethical Hacking, TCS/Forage Cybersecurity Analyst.
+      `.trim();
+      navigator.clipboard.writeText(plainText);
+      alert('Nitika Tejura Resume summary copied to clipboard!');
     }
 
     /* ==========================================================================
-       MATRIX DIGITAL RAIN EFFECT (Canvas)
+       MATRIX CANVAS ANIMATION ENGINE
        ========================================================================== */
     const matrixCanvas = document.getElementById('matrixCanvas');
     const matrixCtx = matrixCanvas.getContext('2d');
@@ -1188,7 +1771,6 @@
         const x = i * fontSize;
         const y = rainDrops[i] * fontSize;
 
-        // Lead character brightness
         if (Math.random() > 0.9) {
           matrixCtx.fillStyle = '#ffffff';
         } else {
@@ -1230,20 +1812,22 @@
     });
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && isMatrixActive) {
-        toggleMatrixMode(false);
+      if (e.key === 'Escape') {
+        if (isMatrixActive) toggleMatrixMode(false);
+        closeExportModal();
       }
     });
 
     /* Global click focus on input */
     document.addEventListener('click', (e) => {
-      if (!isMatrixActive && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input')) {
+      if (!isMatrixActive && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input') && !e.target.closest('.export-modal')) {
         cmdInput.focus();
       }
     });
 
-    /* Initial Focus */
+    /* Initial Startup */
     window.addEventListener('load', () => {
+      startTelemetryClock();
       cmdInput.focus();
     });
   </script>
